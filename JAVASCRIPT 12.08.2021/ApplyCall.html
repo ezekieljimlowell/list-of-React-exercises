@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+</head>
+
+<body>
+    <script>
+        function Materials(name, price, place) {
+            this.name = name;
+            this.price = price;
+            this.place = place;
+        }
+
+        function Motor(name, price, place) {
+            Materials.call(this, name, price, place);
+            console.log(this);
+            this.category = 'Motor';
+        }
+
+        let Dc = new Motor('DC Series Motor', "100$", "London")
+        console.log(Dc.name, Dc);
+
+        const display = {
+            display: function (Class, department) {
+                return `${this.name} ${this.rank} ${Class} ${department}\n`;
+            }
+        }
+
+        const person1 = {
+            name: "Andrew",
+            rank: 5
+        }
+
+        const person2 = {
+            name: "Allerson",
+            rank: 4
+        }
+
+        const person3 = {
+            name: "Gibson",
+            rank: 2
+        }
+
+        var m = display.display.call(person1, "1st year", "Arts");
+        var l = display.display.apply(person2, ["2nd year", "Architecture"]);
+        var n = display.display.apply(person3, ["4th year", "Research"]);
+        console.log(m, l, n);
+
+    </script>
+</body>
+
+</html>

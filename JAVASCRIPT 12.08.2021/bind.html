@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+</head>
+
+<body>
+    <script>
+        const seasons = {
+            one: "spring",
+            two: "summer",
+            three: "autumn",
+            four: "winter",
+            allSeasons: function() {
+                return `${this.one}\n${this.two}\n${this.three}\n${this.four}`
+            }
+        }
+
+        this.one = 100;
+
+        const display1 = seasons.allSeasons; //wrong method
+        console.log(display1());
+
+        const displayByBind = seasons.allSeasons.bind(seasons);
+        const apply1 = seasons.allSeasons.call(seasons);
+        console.log(call1);
+        console.log(displayByBind());
+
+        function Timeout() {
+            this.place = "Villupuram"
+        }
+
+        Timeout.prototype.applyTimeout = function() {
+            setTimeout(this.consoling.bind(this), 2000);
+        }
+
+        Timeout.prototype.consoling = function() {
+            console.log(`I am from ${this.place}`)
+        }
+
+        const place1 = new Timeout();
+        place1.applyTimeout();
+        const call2 = place1.applyTimeout;
+        console.log(call2());
+
+        const ground = {
+            name: "Football",
+            size: function(length, breadth) {
+                return `${this.name} ground is ${length*breadth}square meters`
+            }
+        }
+
+        const pitch = {
+            name: "baseball",
+            size: function(length, breadth) {
+                return `${this.name} pitch is ${length*breadth}square meters`
+            }
+        }
+
+        const ground1 = ground.size.bind(pitch,100,50);
+        console.log(ground1());
+        const pitch1 = pitch.size.bind(ground,0,0);
+        console.log(pitch1());
+        const pitchOfbaseball = pitch.size.bind(pitch,10,12);
+        console.log(pitchOfbaseball());
+
+    </script>
+</body>
+
+</html>
