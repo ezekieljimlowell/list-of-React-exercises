@@ -2,9 +2,8 @@ import React, { useRef } from "react";
 import { AiFillEdit } from "react-icons/ai";
 import { IoCheckmarkDoneSharp, IoClose } from "react-icons/io5";
 
-const TodoItem = props => {
+const TodoItem = (props) => {
   const { item, updateTodo, removeTodo, completeTodo } = props;
-
   const inputRef = useRef(true);
 
   const changeFocus = () => {
@@ -22,6 +21,7 @@ const TodoItem = props => {
   return (
     <div key={item.id}>
       <textarea
+        data-testid = "textArea"
         ref={inputRef}
         disabled={inputRef}
         defaultValue={item.item}
@@ -31,7 +31,7 @@ const TodoItem = props => {
         <AiFillEdit />
       </button>
       {item.completed === false && (
-        <button type="button">
+        <button type="button" onClick={() => completeTodo(item.id)}>
           <IoCheckmarkDoneSharp />
         </button>
       )}

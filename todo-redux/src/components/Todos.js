@@ -17,8 +17,8 @@ const mapDispatchToProps = dispatch => {
 };
 
 const Todos = props => {
-  //console.log(props);
   const [todo, setTodo] = useState("");
+  const [error, setError] = useState(false);
   const handleChange = e => {
     e.preventDefault();
     const value = e.target.value;
@@ -27,7 +27,7 @@ const Todos = props => {
 
   const add = () => {
     if (todo === "") {
-      console.log("input should not be empty");
+      setError(true);
     } else {
       props.addTodo({
         id: nanoid(),
@@ -43,7 +43,8 @@ const Todos = props => {
       <input
         type="text"
         name="todo"
-        onChange={handleChange}
+        placeholder="update task here"
+        onChange={(e) => handleChange(e)}
         value={todo}
       ></input>
       <button type="button" onClick={() => add()}>
@@ -56,6 +57,7 @@ const Todos = props => {
             return <li key={item.id}>{item.item}</li>;
           })}
       </ul>
+      {(error && props.todos.length === 0) && <div>Please provide task name</div>}
     </div>
   );
 };
