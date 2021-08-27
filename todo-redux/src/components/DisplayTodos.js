@@ -3,13 +3,13 @@ import { addTodos, removeTodos, updateTodos, completeTodos } from '../redux/redu
 import TodoItem from './TodoItem';
 import { connect } from 'react-redux';
 
-const mapStateToProps = (state) => {
+export const mapStateToProps = (state) => {
     return {
         todos: state,
     };
 };
 
-const mapDispatchToProps = (dispatch) => {
+export const mapDispatchToProps = (dispatch) => {
     return {
         addTodo: (obj) => dispatch(addTodos(obj)),
         removeTodo: (id) => dispatch(removeTodos(id)),
@@ -18,8 +18,16 @@ const mapDispatchToProps = (dispatch) => {
     };
 };
 
+const STATUS = {
+    ACTIVE: 'active',
+    COMPLETED: 'completed',
+    ALL: 'all',
+}
+
 const DisplayTodos = (props) => {
-    const [status, setStatus] = useState("active");
+    const [status, setStatus] = useState(STATUS.ACTIVE);
+    const isCompleted = props.todos.length > 0 && status === STATUS.COMPLETED;
+    const isActive = props.todos.length > 0 && status === STATUS.ACTIVE;
     return (
         <div>
             {props.todos.length > 0 && <div>
@@ -28,7 +36,7 @@ const DisplayTodos = (props) => {
                 <button type="button" onClick={() => setStatus("all")}>All</button>
             </div>}
             <div>
-                {props.todos.length > 0 && status === "active" ?
+                {isActive ?
                     props.todos.map((item) => {
                         return (
                             item.completed === false && (
@@ -43,7 +51,7 @@ const DisplayTodos = (props) => {
                         )
                     }) : null
                 }
-                {props.todos.length > 0 && status === "completed" ?
+                {isCompleted ?
                     props.todos.map((item) => {
                         return (
                             item.completed && (

@@ -7,14 +7,11 @@ const addTodoReducer = createSlice({
   initialState,
   reducers: {
     addTodos: (state, action) => {
-      console.log(state);
       state.push(action.payload);
-      console.log(state);
       return state;
     },
 
     removeTodos: (state, action) => {
-      console.log(state.filter(item => item.id !== action.payload));
       return state.filter(item => item.id !== action.payload);
     },
 
@@ -33,7 +30,10 @@ const addTodoReducer = createSlice({
     completeTodos: (state, action) => {
       return state.map(todo => {
         if (todo.id === action.payload) {
-          todo.completed = true;
+          return {
+            ...todo,
+            completed: true,
+          }
         }
         return todo;
       });

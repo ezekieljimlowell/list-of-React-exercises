@@ -1,9 +1,8 @@
-import React, { useRef } from "react";
+import React, { useRef, useState } from "react";
 import { AiFillEdit } from "react-icons/ai";
 import { IoCheckmarkDoneSharp, IoClose } from "react-icons/io5";
 
-const TodoItem = (props) => {
-  const { item, updateTodo, removeTodo, completeTodo } = props;
+const TodoItem = ({ item, updateTodo, removeTodo, completeTodo }) => {
   const inputRef = useRef(true);
 
   const changeFocus = () => {
@@ -11,8 +10,10 @@ const TodoItem = (props) => {
     inputRef.current.focus();
   };
 
+
   const update = (id, value, e) => {
-    if (e.which === 13) {
+    const isEnterPressed = e.which === 13;
+    if (isEnterPressed) {
       updateTodo({ id, item: value });
       inputRef.current.disabled = true;
     }
@@ -21,22 +22,22 @@ const TodoItem = (props) => {
   return (
     <div key={item.id}>
       <textarea
-        data-testid = "textArea"
         ref={inputRef}
         disabled={inputRef}
         defaultValue={item.item}
         onKeyPress={e => update(item.id, inputRef.current.value, e)}
+        data-testid= "addedTask"
       ></textarea>
       <button type="button" onClick={() => changeFocus()}>
-        <AiFillEdit />
+        edit
       </button>
       {item.completed === false && (
         <button type="button" onClick={() => completeTodo(item.id)}>
-          <IoCheckmarkDoneSharp />
+          complete
         </button>
       )}
       <button type="button" onClick={() => removeTodo(item.id)}>
-        <IoClose />
+        remove
       </button>
       {item.completed && <span>done</span>}
     </div>

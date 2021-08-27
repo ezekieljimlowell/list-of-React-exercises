@@ -21,8 +21,7 @@ it("adding input task", () => {
     renderTodos(<Todos />);
 
     const input = screen.getByPlaceholderText("update task here");
-    userEvent.type(input, "running");
-    expect(input).toBeInTheDocument("running");
+    expect(input).toBeInTheDocument();
 })
 
 it("check addtask click handler", () => {
@@ -35,8 +34,12 @@ it("check addtask click handler", () => {
     userEvent.click(button);
 
     const addedTask = screen.getByText("cooking");
-    expect(addedTask).toBeInTheDocument;
+    expect(addedTask).toBeInTheDocument();
+    //reset
+    expect(input).toHaveValue("");
 })
+
+//reset
 
 it("check for error if empty task given", () => {
     renderTodos(<Todos />);
@@ -47,4 +50,5 @@ it("check for error if empty task given", () => {
     userEvent.click(button);
     const error = screen.getByText("Please provide task name");
     expect(error).toBeInTheDocument();
+    //check with added task
 })

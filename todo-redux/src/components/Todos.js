@@ -4,7 +4,6 @@ import { addTodos } from "../redux/reducer";
 import { nanoid } from '@reduxjs/toolkit';
 
 const mapStateToProps = state => {
-  //console.log(state);
   return {
     todos: state
   };
