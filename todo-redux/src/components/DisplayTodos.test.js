@@ -3,15 +3,20 @@ import { screen, render, fireEvent } from '@testing-library/react';
 import { createStore } from 'redux';
 import { Provider } from 'react-redux';
 import userEvent from '@testing-library/user-event';
-import { mapStateToProps, mapDispatchToProps } from '../components/DisplayTodos';
-import {
-    reducer,
-    addTodos,
-    removeTodos,
-    updateTodos,
-    completeTodos
-} from '../redux/reducer';
+import { mapStateToProps } from '../components/DisplayTodos';
+import { reducer } from '../redux/reducer';
 import Todos from './Todos';
+
+it("testing mapStateToProps", () => {
+    const state = [];
+    expect(mapStateToProps(state).todos).toEqual([]);
+
+    const stateItem = ["Listening", "speaking"];
+    expect(mapStateToProps(stateItem).todos).toEqual(["Listening", "speaking"]);
+
+    const statePrimitive = "travelling";
+    expect(mapStateToProps(statePrimitive).todos).toEqual("travelling");
+})
 
 const renderDisplay = (
     component,
@@ -71,8 +76,7 @@ it("check completed task", () => {
     userEvent.click(addButton1);
 
     userEvent.type(input, "sleeping");
-    const addButton2 = screen.getByRole("button", { name: /Add Task/i });
-    userEvent.click(addButton2);
+    userEvent.click(addButton1);
 
     const addedElement1 = screen.getByDisplayValue("running");
     expect(addedElement1).toBeInTheDocument();
@@ -84,6 +88,8 @@ it("check completed task", () => {
     const completeButton2 = screen.getByRole("button", { name: /Completed/i })
     userEvent.click(completeButton2);
     expect(screen.getByText("sleeping")).toBeInTheDocument();
+    const doneDiv = screen.getByText("done");
+    expect(doneDiv).toBeInTheDocument();
 })
 
 it("check remove button", () => {
@@ -92,36 +98,70 @@ it("check remove button", () => {
         <Todos />
     </>)
 
-    userEvent.type(screen.getByPlaceholderText("update task here"), "Walking");
-    userEvent.click(screen.getByRole("button", { name: /Add Task/i }));
+    const input = screen.getByPlaceholderText("update task here");
+    const addTaskButton = screen.getByRole("button", { name: /Add Task/i });
+    userEvent.type(input, "Walking");
+    userEvent.click(addTaskButton);
 
-    userEvent.type(screen.getByPlaceholderText("update task here"), "Searching");
-    userEvent.click(screen.getByRole("button", { name: /Add Task/i }));
+    userEvent.type(input, "Searching");
+    userEvent.click(addTaskButton);
 
-    userEvent.click(screen.getAllByRole("button", { name: /remove/i })[1]);
+    const removeButton2 = screen.getAllByRole("button", { name: /remove/i })[1];
+    userEvent.click(removeButton2);
     expect(screen.queryByDisplayValue("sleeping")).not.toBeInTheDocument();
     expect(screen.getByDisplayValue("Walking")).toBeInTheDocument();
 })
 
-it("check with edit and updated", () => {
-    // TODO: intergration vs unit testing
+it("testing update and edit", () => {
     renderDisplay(<>
         <DisplayTodos />
         <Todos />
     </>)
 
-    const updateTaskInput = screen.getByPlaceholderText("update task here");
-    const addTaskBtn = screen.getByRole("button", { name: /Add Task/i });
-    userEvent.type(updateTaskInput, "House maintenance");
-    userEvent.click(addTaskBtn);
-    userEvent.type(updateTaskInput, "Hair cut");
-    userEvent.click(addTaskBtn);
-    userEvent.click(screen.getAllByRole("button", { name: /edit/i })[0]);
-    expect(screen.getByDisplayValue("House maintenance")).toHaveFocus();
+    const input = screen.getByPlaceholderText("update task here");
+    const addTaskButton = screen.getByRole("button", { name: /Add Task/i });
 
-    fireEvent.keyPress(screen.getByDisplayValue("House maintenance"), {key: "Watering plants"});
-    //fireEvent.keyPress(screen.getByDisplayValue("House maintenance"), { key: "Enter", code: "Enter" });
-    expect(screen.getByDisplayValue("Watering plants")).toBeInTheDocument();
+    userEvent.type(input, "reading");
+    userEvent.click(addTaskButton);
+
+    const editButton = screen.getByRole("button", { name: /edit/i });
+    const addedTask = screen.getByPlaceholderText("addedTask");
+    userEvent.click(editButton);
+    expect(addedTask).toHaveFocus();
+
+    const updateButton = screen.getByRole("button", { name: /Update/i });
+    addedTask.setSelectionRange(0, 7);
+    userEvent.type(addedTask, "{backspace}swimming");
+    userEvent.click(updateButton);
+    expect(addedTask).toHaveDisplayValue("swimming");
+    expect(addedTask).toBeDisabled();
 })
 
+it("testing update with empty value throws error", () => {
+    renderDisplay(<>
+        <DisplayTodos />
+        <Todos />
+    </>)
+
+    const input = screen.getByPlaceholderText("update task here");
+    const addTaskButton = screen.getByRole("button", { name: /Add Task/i });
+
+    userEvent.type(input, "Washing cloths");
+    userEvent.click(addTaskButton);
+
+    const editButton = screen.getByRole("button", { name: /edit/i });
+    const addedTask = screen.getByPlaceholderText("addedTask");
+    userEvent.click(editButton);
+
+    const updateButton = screen.getByRole("button", { name: /Update/i });
+    addedTask.setSelectionRange(0, 14);
+    userEvent.type(addedTask, "{backspace}");
+    userEvent.click(updateButton);
+    const error = screen.queryByText("cannot be empty");
+    expect(error).toBeInTheDocument();
+
+    userEvent.type(addedTask, "fishing");
+    userEvent.click(updateButton);
+    expect(error).not.toBeInTheDocument();
+})
 

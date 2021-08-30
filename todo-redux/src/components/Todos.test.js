@@ -5,7 +5,7 @@ import userEvent from '@testing-library/user-event'
 import { createStore } from 'redux';
 import { Provider } from 'react-redux';
 import { reducer } from '../redux/reducer';
-import TodoItem from './TodoItem';
+import { mapStateToProps } from './Todos';
 
 const renderTodos = (
     component,
@@ -14,15 +14,16 @@ const renderTodos = (
     return {
         ...render(<Provider store={store}>{component}</Provider>),
         store,
-    }
-}
+    };
+};
 
-it("adding input task", () => {
-    renderTodos(<Todos />);
+it("testing mapStateToProps", () => {
+    const state = [];
+    expect(mapStateToProps(state).todos).toEqual([]);
 
-    const input = screen.getByPlaceholderText("update task here");
-    expect(input).toBeInTheDocument();
-})
+    const stateItem = ["learning", "eating"];
+    expect(mapStateToProps(stateItem).todos).toEqual(["learning", "eating"]);
+});
 
 it("check addtask click handler", () => {
     renderTodos(<Todos />);
@@ -35,11 +36,8 @@ it("check addtask click handler", () => {
 
     const addedTask = screen.getByText("cooking");
     expect(addedTask).toBeInTheDocument();
-    //reset
-    expect(input).toHaveValue("");
-})
-
-//reset
+    expect(input).toHaveValue(""); //reset
+});
 
 it("check for error if empty task given", () => {
     renderTodos(<Todos />);
@@ -51,4 +49,8 @@ it("check for error if empty task given", () => {
     const error = screen.getByText("Please provide task name");
     expect(error).toBeInTheDocument();
     //check with added task
-})
+    userEvent.type(input, "Handling errors");
+    userEvent.click(button);
+    const errorTask = screen.queryByText("Please provide task name")
+    expect(errorTask).not.toBeInTheDocument();
+});

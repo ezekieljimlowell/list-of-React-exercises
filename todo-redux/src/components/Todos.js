@@ -3,7 +3,7 @@ import { connect } from "react-redux";
 import { addTodos } from "../redux/reducer";
 import { nanoid } from '@reduxjs/toolkit';
 
-const mapStateToProps = state => {
+export const mapStateToProps = state => {
   return {
     todos: state
   };
@@ -33,7 +33,7 @@ const Todos = props => {
         item: todo,
         completed: false
       });
-    }
+    } 
     setTodo("");
   };
 

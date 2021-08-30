@@ -9,7 +9,7 @@ export const mapStateToProps = (state) => {
     };
 };
 
-export const mapDispatchToProps = (dispatch) => {
+const mapDispatchToProps = (dispatch) => {
     return {
         addTodo: (obj) => dispatch(addTodos(obj)),
         removeTodo: (id) => dispatch(removeTodos(id)),
@@ -68,7 +68,6 @@ const DisplayTodos = (props) => {
                 }
                 {props.todos.length > 0 && status === "all" ?
                     props.todos.map((item) => {
-                        console.log(item);
                         return (
                             <TodoItem
                                 key={item.id}
