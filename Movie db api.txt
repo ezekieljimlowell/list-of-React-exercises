@@ -1,0 +1,11 @@
+http://localhost:3000/
+
+Movies database for learning
+
+Display movies using movie API and search particular movie. Add pagination.
+
+534595d4dcb4b9bd70b8132302e37b1a
+
+https://api.themoviedb.org/3/movie/550?api_key=534595d4dcb4b9bd70b8132302e37b1a
+
+eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI1MzQ1OTVkNGRjYjRiOWJkNzBiODEzMjMwMmUzN2IxYSIsInN1YiI6IjYxMmRmZDk0ZWI3OWMyMDA0NDY1YTc2ZCIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.lP4PqGQNcs64KcFzzUGo4Zz8Gc3r_nrac-gYYCAhJZE
