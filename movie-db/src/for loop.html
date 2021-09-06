@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+  </head>
+
+  <body>
+    <script>
+          var movieApi = [];
+          for (let i = 1; i <= 10; i++) {
+            movieApi[
+              i
+            ] = `https://api.themoviedb.org/3/discover/movie?sort_by=popularity.desc&api_key=534595d4dcb4b9bd70b8132302e37b1a&page=${i}`;
+          }
+          movieApi.shift();
+          console.log(movieApi);
+            Promise.all([fetch(movieApi).then(res => res.json())])
+            .then(
+              (data1,data2) => console.log(data1,data2)
+            );
+
+            var dataApi = [];
+          for (let j = 0; j <= 10; j++) {
+            dataApi[j] = dataApi[j];
+          }
+
+                const movieApi1 = `https://api.themoviedb.org/3/discover/movie?sort_by=popularity.desc&api_key=534595d4dcb4b9bd70b8132302e37b1a&page=1`;
+      const movieApi2 = `https://api.themoviedb.org/3/discover/movie?sort_by=popularity.desc&api_key=534595d4dcb4b9bd70b8132302e37b1a&page=2`;
+      const movieApi3 = `https://api.themoviedb.org/3/discover/movie?sort_by=popularity.desc&api_key=534595d4dcb4b9bd70b8132302e37b1a&page=3`;
+      const movieApi4 = `https://api.themoviedb.org/3/discover/movie?sort_by=popularity.desc&api_key=534595d4dcb4b9bd70b8132302e37b1a&page=4`;
+      const movieApi5 = `https://api.themoviedb.org/3/discover/movie?sort_by=popularity.desc&api_key=534595d4dcb4b9bd70b8132302e37b1a&page=5`;
+      const movieApi6 = `https://api.themoviedb.org/3/discover/movie?sort_by=popularity.desc&api_key=534595d4dcb4b9bd70b8132302e37b1a&page=6`;
+      const movieApi7 = `https://api.themoviedb.org/3/discover/movie?sort_by=popularity.desc&api_key=534595d4dcb4b9bd70b8132302e37b1a&page=7`;
+      const movieApi8 = `https://api.themoviedb.org/3/discover/movie?sort_by=popularity.desc&api_key=534595d4dcb4b9bd70b8132302e37b1a&page=8`;
+      const movieApi9 = `https://api.themoviedb.org/3/discover/movie?sort_by=popularity.desc&api_key=534595d4dcb4b9bd70b8132302e37b1a&page=9`;
+      const movieApi10 = `https://api.themoviedb.org/3/discover/movie?sort_by=popularity.desc&api_key=534595d4dcb4b9bd70b8132302e37b1a&page=10`;
+
+                Promise.all(
+              [fetch(movieApi1).then(res => res.json()),
+              fetch(movieApi2).then(res => res.json()),
+              fetch(movieApi3).then(res => res.json()),
+              fetch(movieApi4).then(res => res.json()),
+              fetch(movieApi5).then(res => res.json()),
+              fetch(movieApi6).then(res => res.json()),
+              fetch(movieApi7).then(res => res.json()),
+              fetch(movieApi8).then(res => res.json()),
+              fetch(movieApi9).then(res => res.json()),
+              fetch(movieApi10).then(res => res.json())
+              ]
+          ).then(([data1, data2, data3, data4, data5, data6, data7, data8, data9, data10]) =>
+              console.log(data1.results.concat(data2.results, data3.results,
+                  data4.results, data5.results, data6.results, data7.results,
+                  data8.results, data9.results, data10.results)));
+    </script>
+  </body>
+</html>

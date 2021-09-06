@@ -1,32 +1,72 @@
 import React, { useState, useEffect } from 'react';
-import { BsSearch } from 'react-icons/bs';
 import Movies from './Movies';
-
-const movieApi = "https://api.themoviedb.org/3/discover/movie?sort_by=popularity.desc&api_key=534595d4dcb4b9bd70b8132302e37b1a&page=1";
+import Pagination from './Pagination';
 
 const Search = () => {
 
     const [movies, setMovies] = useState([]);
+    const [search, setSearch] = useState("");
+    const [page, setPage] = useState(1);
+    const [moviesPerPage] = useState(20);
+
+    const movieApi = `https://api.themoviedb.org/3/discover/movie?sort_by=popularity.desc&api_key=534595d4dcb4b9bd70b8132302e37b1a&page=`;
+
+    const pageNumbers = new Array(10).join(",");
 
     useEffect(() => {
-        fetch(movieApi).then(res => res.json())
-            .then((data) => setMovies(data.results))
+        const mapping = pageNumbers.split(",").map((index) => fetch(`${movieApi}${index + 1}`)
+            .then(res => res.json()))
+        console.log(mapping);
+        const promises = Promise.all(mapping)
+        promises.then((data) =>
+            setMovies(data.map((movie => movie.results)).reduce((acc, current) => {
+                return acc.concat(current)
+            }, [])))
     }, [])
 
-    console.log(movies);
+    const changeHandler = (e) => {
+        setSearch(e.target.value);
+    }
+
+    //paginate movies
+    const indexOfLastMovie = page * moviesPerPage;
+    const indexOfFirstMovie = indexOfLastMovie - moviesPerPage;
+    const currentMovies = movies.slice(indexOfFirstMovie, indexOfLastMovie);
+
+    const paginate = pageNumber => {
+        console.log(pageNumber, movies);
+        setPage(pageNumber)
+    };
 
     return (
         <div>
-            <form>
-                <label htmlFor="search">Search Movies</label>
-                <input type="text" id="search" name="movie" placeholder="Search for movies"></input>
-                <button type="submit"><BsSearch /></button>
-            </form>
+            <label htmlFor="search">Search Movies</label>
+            <input
+                type="text" id="search"
+                name="movie"
+                placeholder="Search for movie"
+                onChange={(e) => changeHandler(e)}>
+            </input>
             <div className="movie-container">
-                {movies.length > 0 && movies.map((movie) => (
+                {currentMovies.length > 0 && currentMovies.filter((val) => {
+                    if (search === "") {
+                        return val;
+                    }
+                    else if (val.title.toLowerCase().includes(search.toLowerCase())) {
+                        return val;
+                    }
+                    else {
+                        return null;
+                    }
+                }).map((movie) => (
                     <Movies key={movie.id} {...movie} />
                 ))}
             </div>
+            <Pagination
+                moviesPerPage={moviesPerPage}
+                paginate={paginate}
+                totalMovies={movies.length}
+            />
         </div>
     )
 }

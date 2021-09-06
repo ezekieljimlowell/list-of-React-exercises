@@ -1,0 +1,107 @@
+import React, { useState, useEffect } from 'react';
+import Movies from './Movies';
+import Pagination from './Pagination';
+
+const Search = () => {
+
+    const [movies, setMovies] = useState([]);
+    const [search, setSearch] = useState("");
+    const [page, setPage] = useState(1);
+    const [moviesPerPage] = useState(10);
+
+    const movieApi1 = `https://api.themoviedb.org/3/discover/movie?sort_by=popularity.desc&api_key=534595d4dcb4b9bd70b8132302e37b1a&page=1`;
+    const movieApi2 = `https://api.themoviedb.org/3/discover/movie?sort_by=popularity.desc&api_key=534595d4dcb4b9bd70b8132302e37b1a&page=2`;
+    const movieApi3 = `https://api.themoviedb.org/3/discover/movie?sort_by=popularity.desc&api_key=534595d4dcb4b9bd70b8132302e37b1a&page=3`;
+    const movieApi4 = `https://api.themoviedb.org/3/discover/movie?sort_by=popularity.desc&api_key=534595d4dcb4b9bd70b8132302e37b1a&page=4`;
+    const movieApi5 = `https://api.themoviedb.org/3/discover/movie?sort_by=popularity.desc&api_key=534595d4dcb4b9bd70b8132302e37b1a&page=5`;
+    const movieApi6 = `https://api.themoviedb.org/3/discover/movie?sort_by=popularity.desc&api_key=534595d4dcb4b9bd70b8132302e37b1a&page=6`;
+    const movieApi7 = `https://api.themoviedb.org/3/discover/movie?sort_by=popularity.desc&api_key=534595d4dcb4b9bd70b8132302e37b1a&page=7`;
+    const movieApi8 = `https://api.themoviedb.org/3/discover/movie?sort_by=popularity.desc&api_key=534595d4dcb4b9bd70b8132302e37b1a&page=8`;
+    const movieApi9 = `https://api.themoviedb.org/3/discover/movie?sort_by=popularity.desc&api_key=534595d4dcb4b9bd70b8132302e37b1a&page=9`;
+    const movieApi10 = `https://api.themoviedb.org/3/discover/movie?sort_by=popularity.desc&api_key=534595d4dcb4b9bd70b8132302e37b1a&page=10`;
+
+    useEffect(() => {
+        Promise.all(
+            [fetch(movieApi1).then(res => res.json()),
+            fetch(movieApi2).then(res => res.json()),
+            fetch(movieApi3).then(res => res.json()),
+            fetch(movieApi4).then(res => res.json()),
+            fetch(movieApi5).then(res => res.json()),
+            fetch(movieApi6).then(res => res.json()),
+            fetch(movieApi7).then(res => res.json()),
+            fetch(movieApi8).then(res => res.json()),
+            fetch(movieApi9).then(res => res.json()),
+            fetch(movieApi10).then(res => res.json())
+            ]
+        ).then(([data1, data2, data3, data4, data5, data6, data7, data8, data9, data10]) =>
+            setMovies(data1.results.concat(data2.results, data3.results,
+                data4.results, data5.results, data6.results, data7.results,
+                data8.results, data9.results, data10.results)));
+    })
+
+    const changeHandler = (e) => {
+        setSearch(e.target.value);
+    }
+
+    //paginate movies
+    const indexOfLastMovie = page * moviesPerPage;
+    const indexOfFirstMovie = indexOfLastMovie - moviesPerPage;
+    const currentMovies = movies.slice(indexOfFirstMovie, indexOfLastMovie);
+
+    const paginate = pageNumber => setPage(pageNumber);
+
+    return (
+        <div>
+            <label htmlFor="search">Search Movies</label>
+            <input
+                type="text" id="search"
+                name="movie"
+                placeholder="Search for movies"
+                onChange={(e) => changeHandler(e)}>
+            </input>
+            <div className="movie-container">
+                {currentMovies.length > 0 && currentMovies.filter((val) => {
+                    if (search === "") {
+                        return val;
+                    }
+                    else if (val.title.toLowerCase().includes(search.toLowerCase())) {
+                        return val;
+                    }
+                    else {
+                        return null;
+                    }
+                }).map((movie) => (
+                    <Movies key={movie.id} {...movie} />
+                ))}
+            </div>
+            <Pagination
+                moviesPerPage={moviesPerPage}
+                paginate={paginate}
+                totalMovies={movies.length}
+            />
+        </div>
+    )
+}
+
+export default Search;
+
+
+import React from 'react';
+import './Movies.css';
+
+const imageApi = "https://image.tmdb.org/t/p/original"
+
+const Movies = ({ currentMovies }) => {
+    return (
+        <div className="movieList">
+            <img className="image" src={imageApi + poster_path} alt={title}></img>
+            <div className="movieInfo">
+                <div className="title">{title}</div>
+                <div>{release_date}</div>
+                <div>Rating: {vote_average}</div>
+            </div>
+        </div>
+    )
+}
+
+export default Movies;
