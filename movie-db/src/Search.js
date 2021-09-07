@@ -3,40 +3,49 @@ import Movies from './Movies';
 import Pagination from './Pagination';
 
 const Search = () => {
-
     const [movies, setMovies] = useState([]);
     const [search, setSearch] = useState("");
     const [page, setPage] = useState(1);
     const [moviesPerPage] = useState(20);
 
-    const movieApi = `https://api.themoviedb.org/3/discover/movie?sort_by=popularity.desc&api_key=534595d4dcb4b9bd70b8132302e37b1a&page=`;
+    const movieApiPage1 = `https://api.themoviedb.org/3/discover/movie?sort_by=popularity.desc&api_key=534595d4dcb4b9bd70b8132302e37b1a&page=1`;
 
-    const pageNumbers = new Array(10).join(",");
+    const movieApiPagination = `https://api.themoviedb.org/3/discover/movie?sort_by=popularity.desc&api_key=534595d4dcb4b9bd70b8132302e37b1a&page=`;
 
-    useEffect(() => {
-        const mapping = pageNumbers.split(",").map((index) => fetch(`${movieApi}${index + 1}`)
-            .then(res => res.json()))
-        console.log(mapping);
-        const promises = Promise.all(mapping)
-        promises.then((data) =>
-            setMovies(data.map((movie => movie.results)).reduce((acc, current) => {
-                return acc.concat(current)
-            }, [])))
-    }, [])
+
+    useEffect((pageNumber) => {
+        fetch(movieApiPage1).then(result => result.json())
+            .then(data => setMovies(data.results))
+    }, [movieApiPage1])
 
     const changeHandler = (e) => {
         setSearch(e.target.value);
     }
 
-    //paginate movies
+    const paginate = (pageNumber) => {
+        console.log(pageNumber);
+        setPage(pageNumber)
+        let pageNumbers = new Array(10).join(",");
+        const fetchData = () => {
+            const moviesInfoPromiseArray = pageNumbers.split(",").map((item, index) => fetch(`${movieApiPagination}${index + 1}`)
+                .then(res => res.json()))
+            const moviesInfoResultArrayPromise = Promise.all(moviesInfoPromiseArray)
+            // Promise<Array<Object>>
+
+            moviesInfoResultArrayPromise.then((data) => {
+                setMovies(
+                    data.map((movie => movie.results))
+                        .reduce((acc, current) => acc.concat(current), [])
+                )
+            }
+            )
+        }
+        fetchData();
+    };
+
     const indexOfLastMovie = page * moviesPerPage;
     const indexOfFirstMovie = indexOfLastMovie - moviesPerPage;
     const currentMovies = movies.slice(indexOfFirstMovie, indexOfLastMovie);
-
-    const paginate = pageNumber => {
-        console.log(pageNumber, movies);
-        setPage(pageNumber)
-    };
 
     return (
         <div>
@@ -45,6 +54,7 @@ const Search = () => {
                 type="text" id="search"
                 name="movie"
                 placeholder="Search for movie"
+                value={search}
                 onChange={(e) => changeHandler(e)}>
             </input>
             <div className="movie-container">

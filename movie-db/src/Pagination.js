@@ -4,8 +4,10 @@ const Pagination = ({ totalMovies, moviesPerPage, paginate }) => {
 
     for (let i = 1; i <= Math.ceil(totalMovies / moviesPerPage); i++) {
         pageNumbers.push(i)
+        console.log(pageNumbers)
     }
 
+    console.log(pageNumbers)
     return (
         <nav className="pagination">
             {pageNumbers.map((number) => (

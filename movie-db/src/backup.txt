@@ -105,3 +105,26 @@ const Movies = ({ currentMovies }) => {
 }
 
 export default Movies;
+
+const fetchData = () => {
+            const moviesInfoPromiseArray = pageNumbers.map((item, index) => fetch(`${movieApi}${index + 1}`)
+                .then(res => res.json()))
+            const moviesInfoResultArrayPromise = Promise.all(moviesInfoPromiseArray)
+            // Promise<Array<Object>>
+            
+            moviesInfoResultArrayPromise.then((movieArray) =>
+                const flatArray = data.map((movie => movie.results))
+                .reduce((acc, current) => acc.concat(current), [])
+                setMovies(
+                        
+                    )
+            )
+        }
+
+        /*for (let i = 1; i <= 10; i++) {
+            Promise.all([fetch(`${movieApiPagination}${i}`)]).then(result => result.json())
+            .then(data => {
+                setPage(pageNumber);
+                setMovies(data.results)
+                console.log(data.page)})
+        }*/
