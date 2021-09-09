@@ -1,19 +1,19 @@
 
-const Pagination = ({ totalMovies, moviesPerPage, paginate }) => {
+const Pagination = ({ paginate, moviesPerPage, totalMovies }) => {
     let pageNumbers = [];
 
-    for (let i = 1; i <= Math.ceil(totalMovies / moviesPerPage); i++) {
+    for (let i = 1; i <= moviesPerPage/2; i++) {
         pageNumbers.push(i)
-        console.log(pageNumbers)
     }
 
-    console.log(pageNumbers)
     return (
         <nav className="pagination">
             {pageNumbers.map((number) => (
                 <span key={number}>
                     <a
-                        onClick={() => paginate(number)}
+                        onClick={() => {
+                            paginate(number)
+                        }}
                         href="#/"
                         className="page"
                     >
