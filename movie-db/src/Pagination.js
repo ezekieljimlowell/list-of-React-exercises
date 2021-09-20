@@ -1,5 +1,5 @@
 
-const Pagination = ({ paginate, moviesPerPage, totalMovies }) => {
+const Pagination = ({ paginate, moviesPerPage }) => {
     let pageNumbers = [];
 
     for (let i = 1; i <= moviesPerPage/2; i++) {

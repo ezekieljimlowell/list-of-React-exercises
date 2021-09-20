@@ -1,0 +1,122 @@
+            await axios.get.mockImplementation(() => Promise.resolve({ response: 200 }))
+
+jest.mock("axios");
+    axios.get = jest.fn();
+    jest.useFakeTimers();
+    jest.advanceTimersByTime(3000);
+
+const nock = require('nock')
+const scope = nock("https://api.themoviedb.org")
+        .get("/3/discover/movie?sort_by=popularity.desc&api_key=534595d4dcb4b9bd70b8132302e37b1a&page=1")
+        .reply(200)
+    console.log(scope);
+    /*const scope = nock("https://api.themoviedb.org").persist().get("/3/discover/movie?sort_by=popularity.desc&api_key=534595d4dcb4b9bd70b8132302e37b1a&page=1")
+    .reply(200)*/
+
+describe("initial display of movies", () => {
+    beforeAll(() => {
+        jest.mock(displayMoviesByPopular)
+    });
+    it("testing inital display", async () => {
+        await act(async () => {
+            render(<Search />);
+            const movieTitle = await screen.findByText("The Tomorrow War");
+            expect(movieTitle).toBeInTheDocument();
+            const movieReleasedDate1 = (await screen.findAllByText('2021-09-03'))[0];
+            expect(movieReleasedDate1).toBeInTheDocument();
+            const movieRatings = (await screen.findAllByText("Rating: 8.1"))[0];
+            expect(movieRatings).toBeInTheDocument();
+
+            const movieImage = await screen.findByAltText("The Tomorrow War");
+            expect(movieImage).toBeInTheDocument();
+        })
+    })
+})
+
+describe("search movies", () => {
+    beforeAll(() => {
+        jest.mock(movieSearch)
+    })
+
+    it("Search function by movie names", async () => {
+        await act(async () => {
+            render(<Search />)
+            const input = screen.getByPlaceholderText("Search for movie");
+            fireEvent.change(input, { target: { value: "The tomorrow war" } });
+            const visibleElement = await screen.findByText("The Tomorrow War");
+            expect(visibleElement).toBeInTheDocument();
+            const movieReleasedDate = await screen.findByText('2021-09-03');
+            expect(movieReleasedDate).toBeInTheDocument();
+            const movieRatings = (await screen.findAllByText("Rating: 8.1"))[0];
+            expect(movieRatings).toBeInTheDocument();
+
+            const movieImage = await screen.findByAltText("The Tomorrow War");
+            expect(movieImage).toBeInTheDocument();
+        })
+
+    });
+
+    it("check by multiple elements with the", async () => {
+        await act(async () => {
+            render(<Search />)
+
+            const input1 = screen.getByPlaceholderText("Search for movie");
+            fireEvent.change(input1, { target: { value: "The" } });
+
+            const visibleElement1 = await screen.findByText("The Tomorrow War");
+            expect(visibleElement1).toBeInTheDocument();
+            const visibleElement = await screen.findByText("The Suicide Squad");
+            expect(visibleElement).toBeInTheDocument();
+            const visibleElement2 = await screen.findByText("PAW Patrol: The Movie");
+            expect(visibleElement2).toBeInTheDocument();
+        })
+    })
+})
+
+describe("testing error", () => {
+    beforeAll(() => {
+        jest.mock(displayMoviesByPopular)
+    })
+    it("Testing error for failed fetch", async () => {
+        await act(async () => {
+            render(<Search />);
+            const errorElement1 = await screen.findByText("Error");
+            expect(errorElement1).toBeInTheDocument();
+        })
+    })
+})
+
+describe("testing error after searching", () => {
+    beforeAll(() => jest.mock(movieSearch))
+    it("error after searching", async () => {
+        await act(async () => {
+            render(<Search />);
+            const input = screen.getByPlaceholderText("Search for movie");
+            fireEvent.change(input, { target: { value: "The tomorrow war" } });
+
+            const errorElement2 = await screen.findByText("Error");
+            expect(errorElement2).toBeInTheDocument();
+        })
+    })
+})
+
+describe("Pagination", () => {
+    beforeAll(() => jest.mock(displayMoviesByPopular))
+    it("test pagination", async () => {
+        await act(async () => {
+            render(<Search />)
+            const pagination = screen.getByText(3);
+            fireEvent.click(pagination);
+
+            const movieResult = await screen.findByText("No Sudden Move");
+            expect(movieResult).toBeInTheDocument();
+            const movieReleasedDate = await screen.findByText("2021-06-24");
+            expect(movieReleasedDate).toBeInTheDocument();
+            const movieRatings = (await screen.findAllByText("Rating: 6.1"))[0];
+            expect(movieRatings).toBeInTheDocument();
+
+            const movieImage = await screen.findByAltText("No Sudden Move");
+            expect(movieImage).toBeInTheDocument();
+        })
+    })
+})

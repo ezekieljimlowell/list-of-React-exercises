@@ -175,3 +175,38 @@ const fetchData = () => {
                 page: {page}
             }).then(movieSearchResult => setMovies(movieSearchResult.data.results))
         }
+
+        "test": "react-scripts test",
+
+        import Pagination from './Pagination';
+import Search from './Search';
+import { screen, render, act } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
+
+const { displayMoviesByPopular } = require("./Search");
+
+describe("Pagination", () => {
+    beforeAll(() => jest.mock(displayMoviesByPopular))
+    it("test pagination", async () => {
+        await act(async () => {
+            render(
+                <>
+                    <Search />
+                    <Pagination />
+                </>
+            )
+            const pagination = screen.getByText(3);
+            userEvent.click(pagination);
+
+            const movieResult = await screen.findByText("No Sudden Move");
+            expect(movieResult).toBeInTheDocument();
+            const movieReleasedDate = await screen.findByText("2021-06-24");
+            expect(movieReleasedDate).toBeInTheDocument();
+            const movieRatings = await screen.findByText("Rating: 6.5");
+            expect(movieRatings).toBeInTheDocument();
+
+            const movieImage = await screen.findByAltText("No Sudden Move");
+            expect(movieImage).toBeInTheDocument();
+        })
+    })
+})

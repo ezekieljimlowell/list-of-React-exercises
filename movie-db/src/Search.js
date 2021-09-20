@@ -3,26 +3,37 @@ import Movies from './Movies';
 import Pagination from './Pagination';
 import axios from 'axios';
 
-const Search = () => {
-    const [movies, setMovies] = useState([]);
+const Search = ({ movie }) => {
+    const [movies, setMovies] = useState("");
     const [search, setSearch] = useState("");
     const [page, setPage] = useState(1);
     const [moviesPerPage] = useState(20);
+    const [error, setError] = useState("");
 
-    const movieApi = `https://api.themoviedb.org/3/discover/movie?sort_by=popularity.desc&api_key=534595d4dcb4b9bd70b8132302e37b1a&page=${page}&query=}`;
+    const movieApi = `https://api.themoviedb.org/3/discover/movie?sort_by=popularity.desc&api_key=534595d4dcb4b9bd70b8132302e37b1a&page=${page}`;
 
-    const movieApiSearch = `https://api.themoviedb.org/3/search/movie?api_key=534595d4dcb4b9bd70b8132302e37b1a&query=${search}&&page=${page}&include_adult=false`;
-    const movieSearch = () => {
-        axios.get(`${movieApiSearch}`, {
-            params: search
-        }).then(movieSearchResult => setMovies(movieSearchResult.data.results))
-    }
+    const movieApiSearch = `https://api.themoviedb.org/3/search/movie?api_key=534595d4dcb4b9bd70b8132302e37b1a&query=${search}&page=${page}&include_adult=false`;
 
-    const displayMoviesByPopular = () => {
-        axios.get(`${movieApi}${page}`)
-            .then(movie => setMovies(movie.data.results));
-    }
     useEffect(() => {
+        const movieSearch = async () => {
+            try {
+                const movieSearchResult = await axios.get(`${movieApiSearch}`, {
+                    params: search
+                });
+                return setMovies(movieSearchResult.data.results);
+            } catch (e) {
+                return setError("Error");
+            }
+        }
+
+        const displayMoviesByPopular = async () => {
+            try {
+                const movie = await axios.get(`${movieApi}${page}`);
+                return setMovies(movie.data.results);
+            } catch (e) {
+                return setError("Error");
+            }
+        }
         const fetchData = () => {
             if (search !== "") {
                 movieSearch()
@@ -32,7 +43,6 @@ const Search = () => {
             }
         };
         fetchData();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [movieApi, movieApiSearch, page, search])
 
     const onSearchInput = (e) => {
@@ -58,6 +68,7 @@ const Search = () => {
                 paginate={setPage}
                 moviesPerPage={moviesPerPage}
             />
+            <div>{error}</div>
         </div>
     )
 }
