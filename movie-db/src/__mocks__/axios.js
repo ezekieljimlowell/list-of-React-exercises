@@ -1,4 +1,4 @@
-const sampleResponse = {
+export const sampleResponse = {
     data: {
         results: [
             {

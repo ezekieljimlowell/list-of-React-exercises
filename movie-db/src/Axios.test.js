@@ -1,12 +1,12 @@
 import { displayMoviesByPopular } from './Axios';
 import { movieApi } from './Axios';
 import axios from "axios";
-import { render, screen, fireEvent } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
 import Search from './Search';
 
 jest.mock("axios")
 
-describe("testing axios get when api fetched", () => {
+describe("testing axios get when api fetched and initial display", () => {
     it("axios get when successful", async () => {
         const firstMovie = {
             "adult": false,
@@ -29,6 +29,16 @@ describe("testing axios get when api fetched", () => {
         const result = await displayMoviesByPopular();
         expect(axios.get).toHaveBeenCalledWith(`${movieApi}`);
         expect(result).toEqual(firstMovie);
+        render(<Search />)
+        const movieTitle = await screen.findByText("Eggs Run");
+        expect(movieTitle).toBeInTheDocument();
+        const movieReleasedDate1 = await screen.findByText('2021-08-12');
+        expect(movieReleasedDate1).toBeInTheDocument();
+        const movieRatings = await screen.findByText("Rating: 8.3");
+        expect(movieRatings).toBeInTheDocument();
+
+        const movieImage = (await screen.findAllByRole("img", { altText: /Eggs Run/i }))[0];
+        expect(movieImage).toBeInTheDocument();
 
     })
 })

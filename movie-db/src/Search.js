@@ -3,7 +3,7 @@ import Movies from './Movies';
 import Pagination from './Pagination';
 import axios from 'axios';
 
-const Search = ({ movie }) => {
+const Search = () => {
     const [movies, setMovies] = useState("");
     const [search, setSearch] = useState("");
     const [page, setPage] = useState(1);
