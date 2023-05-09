@@ -34,7 +34,7 @@ console.log(g)
 g = "why"
 console.log(g)
 const h = "twwdaw"
-h = 3 //caught TypeError: Assignment to constant variable.
+//h = 3 //caught TypeError: Assignment to constant variable.
 
 
 
